@@ -6,16 +6,25 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @SpringBootApplication
 @RestController
 public class DemoApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication app = new SpringApplication(DemoApplication.class);
+        app.setDefaultProperties(Map.of(
+                        "server.port", System.getenv().getOrDefault("PORT", "8080"),
+                        "server.servlet.context-path", System.getenv().getOrDefault("CGAAP_BASE_PATH", "/")
+                )
+        );
+        app.run(args);
+    }
 
-	@GetMapping("/")
-	public String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
-		return String.format("Hello %s!", name);
-	}
+    @GetMapping()
+    public String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
+        return String.format("Hello %s!", name);
+    }
+
 }
